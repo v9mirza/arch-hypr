@@ -219,16 +219,7 @@ EOF
 # Font Cache
 run_with_spinner "Updating Font Cache" fc-cache -fv
 
-# FetchX Auto-run
-if ! grep -q "fetchx" ~/.bashrc; then
-  cat <<EOF >> ~/.bashrc
 
-# Auto-run fetchx
-if command -v fetchx >/dev/null; then
-  fetchx
-fi
-EOF
-fi
 
 # --- Summary ---
 echo
