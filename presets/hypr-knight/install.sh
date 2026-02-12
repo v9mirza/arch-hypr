@@ -157,7 +157,20 @@ else
     warn "FetchX installation failed"
 fi
 
-# --- 5. Configuration ---
+# --- 5. Keyring PAM ---
+step "Configuring Keyring"
+PAM_FILE="/etc/pam.d/login"
+if [ -f "$PAM_FILE" ]; then
+    if ! grep -q "pam_gnome_keyring.so" "$PAM_FILE"; then
+        run_with_spinner "Enabling Auto-unlock" sudo bash -c "echo 'auth       optional     pam_gnome_keyring.so' >> $PAM_FILE && echo 'session    optional     pam_gnome_keyring.so auto_start' >> $PAM_FILE"
+    else
+        success "Keyring PAM already configured"
+    fi
+else
+    warn "PAM file $PAM_FILE not found, skipping auto-unlock config"
+fi
+
+# --- 6. Configuration ---
 step "Deploying Configs"
 
 if [[ ! -f config/hypr/hyprland.conf ]]; then
@@ -183,7 +196,7 @@ fi
 cp config/mimeapps.list ~/.config/mimeapps.list
 chmod +x ~/.config/hypr/scripts/*.sh 2>/dev/null || true
 
-# --- 6. GTK & Shell ---
+# --- 7. GTK & Shell ---
 step "Finalizing Setup"
 
 # Hyprland Entry
