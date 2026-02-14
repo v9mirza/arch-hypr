@@ -41,4 +41,5 @@ xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk
 gnome-themes-extra
 gsettings-desktop-schemas
+dolphin
 

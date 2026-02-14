@@ -9,3 +9,6 @@ polkit-gnome
 rsync
 gnome-keyring
 libsecret
+pipewire-pulse
+pipewire-alsa
+pipewire-jack
