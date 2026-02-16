@@ -112,7 +112,8 @@ sudo pacman -Sy --noconfirm archlinux-keyring || warn "Keyring update issue"
 step "Upgrading System..."
 # Force remove lock if exists to avoid stale locks
 sudo rm -f /var/lib/pacman/db.lck
-if sudo pacman -Syyu --noconfirm; then
+# Upgrade system (force overwrite to handle any file conflicts)
+if sudo pacman -Syyu --noconfirm --overwrite '*'; then
     success "System Updated"
 else
     error "Update Failed"
