@@ -195,6 +195,9 @@ done
 echo -e "   ${DIM}→ Copying configs...${RESET}"
 if rsync -av --delete "$THEME_PATH/" ~/.config/; then
     success "Dotfiles applied"
+    # Ensure scripts are executable
+    chmod +x ~/.config/hypr/scripts/*.sh 2>/dev/null || true
+    chmod +x ~/.config/waybar/scripts/*.sh 2>/dev/null || true
 fi
 
 # Install Theme Switcher
@@ -207,6 +210,7 @@ chmod +x "$HOME/.local/bin/switch-theme"
 step "Installing Themes data..."
 mkdir -p "$HOME/.config/v9-hyprdots"
 cp -r themes "$HOME/.config/v9-hyprdots/"
+find "$HOME/.config/v9-hyprdots/themes" -name "*.sh" -exec chmod +x {} \;
 
 # Ensure ~/.local/bin is in PATH
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
