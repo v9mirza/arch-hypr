@@ -80,18 +80,19 @@ Wallpapers are managed automatically.
 
 ## Keybindings
 
-| Key               | Action                  |
-| :---------------- | :---------------------- |
-| `Super` + `Enter` | Open Terminal (Ghostty) |
-| `Super` + `Space` | App Launcher (Wofi)     |
-| `Super` + `E`     | File Manager (Yazi)     |
-| `Super` + `B`     | Browser (Firefox)       |
-| `Super` + `M`     | System Monitor (Btop)   |
-| `Super` + `X`     | Power Menu              |
-| `Super` + `Q`     | Close Window            |
-| `Super` + `F`     | Toggle Float            |
-| `Super` + `L`     | Lock Screen             |
-| `Print`           | Screenshot              |
+| Key                   | Action                  |
+| :-------------------- | :---------------------- |
+| `Super` + `Enter`     | Open Terminal (Ghostty) |
+| `Super` + `Space`     | App Launcher (Wofi)     |
+| `Super` + `E`         | File Manager (Yazi)     |
+| `Super` + `B`         | Browser (Firefox)       |
+| `Super` + `M`         | System Monitor (Btop)   |
+| `Super` + `X`         | Power Menu              |
+| `Super` + `Q`         | Close Window            |
+| `Super` + `F`         | Toggle Float            |
+| `Super` + `L`         | Lock Screen             |
+| `Super` + `Alt` + `T` | Theme Switcher          |
+| `Print`               | Screenshot              |
 
 ---
 
