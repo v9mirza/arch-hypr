@@ -21,11 +21,13 @@ REPO_DIR="$SCRIPT_DIR" # Assuming script is run from repo root or similiar for n
 # Ensure we can find the themes directory
 if [[ -d "$SCRIPT_DIR/themes" ]]; then
     THEMES_DIR="$SCRIPT_DIR/themes"
+elif [[ -d "$HOME/.config/v9-hyprdots/themes" ]]; then
+    THEMES_DIR="$HOME/.config/v9-hyprdots/themes"
 elif [[ -d "$SCRIPT_DIR/../themes" ]]; then
     THEMES_DIR="$SCRIPT_DIR/../themes"
 else
-    # Fallback to current directory for relative runs
-    THEMES_DIR="./themes"
+    # Fallback/Error
+    THEMES_DIR=""
 fi
 
 print_banner() {
