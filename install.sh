@@ -198,6 +198,7 @@ if rsync -av --delete "$THEME_PATH/" ~/.config/; then
     # Ensure scripts are executable
     chmod +x ~/.config/hypr/scripts/*.sh 2>/dev/null || true
     chmod +x ~/.config/waybar/scripts/*.sh 2>/dev/null || true
+fi
     
 # Install Shared Wallpapers
 step "Installing Wallpapers..."
