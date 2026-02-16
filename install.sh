@@ -13,7 +13,6 @@ G='\033[0;32m'
 B='\033[0;34m'
 C='\033[0;36m'
 W='\033[1;37m'
-LOG="/tmp/v9-bootstrap.log"
 
 # --- Helpers ---
 print_banner() {
@@ -30,7 +29,7 @@ print_banner() {
 EOF
     echo -e "${RESET}"
     echo -e "${DIM}----------------------------------------------------------------${RESET}"
-    echo -e "${C} :: v9-hyprdots Unified :: ${DIM}v2.2${RESET}"
+    echo -e "${C} :: v9-hyprdots Unified :: ${DIM}v2.3 (Verbose)${RESET}"
     echo
 }
 
@@ -48,39 +47,6 @@ error() {
 
 warn() {
     echo -e "   ${C}‼${RESET} $1"
-}
-
-# $1 = Message, $2.. = Command
-run_with_spinner() {
-    local msg="$1"
-    shift
-    
-    echo -n -e "   ${DIM}→${RESET} $msg... "
-    
-    # Run command in background
-    "$@" &> "$LOG" &
-    local pid=$!
-    
-    local delay=0.1
-    local spinstr='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
-    
-    while kill -0 $pid 2>/dev/null; do
-        local temp=${spinstr#?}
-        printf "[%c]" "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b"
-    done
-    
-    wait $pid
-    local exit_code=$?
-    
-    if [ $exit_code -eq 0 ]; then
-        echo -e "${G}Done${RESET}"
-    else
-        echo -e "${R}Fail${RESET}"
-        return $exit_code
-    fi
 }
 
 # --- Checks ---
@@ -140,18 +106,16 @@ if ! ping -c 1 archlinux.org &> /dev/null; then
 fi
 
 # --- 1. System Update ---
-# --- 1. System Update ---
-step "Updating System"
-if run_with_spinner "Updating Keyring" sudo pacman -Sy --noconfirm archlinux-keyring; then
-    success "Keyring Updated"
-else
-    warn "Keyring update had issues, continuing..."
-fi
+step "Updating Keyring..."
+sudo pacman -Sy --noconfirm archlinux-keyring || warn "Keyring update issue"
 
-if run_with_spinner "Upgrading System" sudo bash -c "rm -f /var/lib/pacman/db.lck && pacman -Syyu --noconfirm"; then
+step "Upgrading System..."
+# Force remove lock if exists to avoid stale locks
+sudo rm -f /var/lib/pacman/db.lck
+if sudo pacman -Syyu --noconfirm; then
     success "System Updated"
 else
-    error "Update Failed. Please run 'sudo pacman -Syu' manually to see the error."
+    error "Update Failed"
     exit 1
 fi
 
@@ -166,9 +130,11 @@ for file in pkgs/*.txt; do
     while read -r pkg; do
         [[ -z "$pkg" || "$pkg" == \#* ]] && continue
         
-        if run_with_spinner "Installing $pkg" sudo pacman -S --needed --noconfirm "$pkg"; then
+        echo -e "   ${DIM}→ Installing $pkg...${RESET}"
+        if sudo pacman -S --needed --noconfirm "$pkg"; then
             :
         else
+            error "Failed to install $pkg"
             FAILED_PKGS+=("$pkg")
         fi
     done < "$file"
@@ -176,14 +142,14 @@ done
 
 # --- 3. Services ---
 step "Enabling Services"
-run_with_spinner "NetworkManager" sudo systemctl enable --now NetworkManager
-run_with_spinner "Bluetooth" sudo systemctl enable --now bluetooth
-run_with_spinner "Avahi" sudo systemctl enable --now avahi-daemon
-success "Services verified"
+sudo systemctl enable --now NetworkManager
+sudo systemctl enable --now bluetooth
+sudo systemctl enable --now avahi-daemon
+success "Services enabled"
 
 # --- 4. FetchX ---
 step "Installing FetchX"
-if run_with_spinner "Downloading & Installing" bash -c "curl -fsSL https://raw.githubusercontent.com/v9mirza/fetchx/main/install.sh | bash"; then
+if curl -fsSL https://raw.githubusercontent.com/v9mirza/fetchx/main/install.sh | bash; then
     success "FetchX Ready"
 else
     warn "FetchX installation failed"
@@ -194,7 +160,9 @@ step "Configuring Keyring"
 PAM_FILE="/etc/pam.d/login"
 if [ -f "$PAM_FILE" ]; then
     if ! grep -q "pam_gnome_keyring.so" "$PAM_FILE"; then
-        run_with_spinner "Enabling Auto-unlock" sudo bash -c "echo 'auth       optional     pam_gnome_keyring.so' >> $PAM_FILE && echo 'session    optional     pam_gnome_keyring.so auto_start' >> $PAM_FILE"
+        echo -e "   ${DIM}→ Adding PAM config...${RESET}"
+        sudo bash -c "echo 'auth       optional     pam_gnome_keyring.so' >> $PAM_FILE"
+        sudo bash -c "echo 'session    optional     pam_gnome_keyring.so auto_start' >> $PAM_FILE"
     else
         success "Keyring PAM already configured"
     fi
@@ -223,7 +191,8 @@ for d in hypr waybar dunst kitty wofi cava btop; do
 done
 
 # Copy
-if run_with_spinner "Syncing Dotfiles" rsync -av --delete "$THEME_PATH/" ~/.config/; then
+echo -e "   ${DIM}→ Copying configs...${RESET}"
+if rsync -av --delete "$THEME_PATH/" ~/.config/; then
     success "Dotfiles applied"
 fi
 
@@ -232,8 +201,6 @@ step "Installing Theme Switcher"
 mkdir -p "$HOME/.local/bin"
 cp switch-theme.sh "$HOME/.local/bin/switch-theme"
 chmod +x "$HOME/.local/bin/switch-theme"
-# Ensure .local/bin is in PATH (common, but good to check/warn if strict)
-# We won't modify shell rc automatically to avoid bloat, but we can assume standard arch setup or warn.
 success "Installed 'switch-theme' to ~/.local/bin"
 
 
@@ -242,7 +209,8 @@ step "Finalizing Setup"
 
 # Hyprland Entry
 if ! command -v Hyprland &> /dev/null; then
-    run_with_spinner "Installing Hyprland" sudo pacman -S --noconfirm hyprland
+    step "Installing Hyprland..."
+    sudo pacman -S --noconfirm hyprland
 fi
 
 sudo mkdir -p /usr/share/wayland-sessions
@@ -271,7 +239,8 @@ gtk-application-prefer-dark-theme=1
 EOF
 
 # Font Cache
-run_with_spinner "Updating Font Cache" fc-cache -fv
+step "Updating Font Cache..."
+fc-cache -fv
 
 # --- Summary ---
 echo
