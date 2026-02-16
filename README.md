@@ -1,78 +1,110 @@
-# V9-hyprdots
-![Made with Arch](https://img.shields.io/badge/Made%20with-Arch-1793d1?style=for-the-badge&logo=arch-linux&logoColor=white)
-![Window Manager](https://img.shields.io/badge/Window_Manager-Hyprland-2E3440?style=for-the-badge&logo=hyprland&logoColor=white)
-![Style](https://img.shields.io/badge/Style-Modern%20Clean-6f7a80?style=for-the-badge)
+<div align="center">
+    <h1>V9-Hyprdots</h1>
+    <p>
+        <a href="https://archlinux.org"><img src="https://img.shields.io/badge/Arch_Linux-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" alt="Arch Linux" /></a>
+        <a href="https://hyprland.org"><img src="https://img.shields.io/badge/Hyprland-2E3440?style=for-the-badge&logo=hyprland&logoColor=white" alt="Hyprland" /></a>
+        <a href="https://github.com/v9mirza/v9-hyprdots"><img src="https://img.shields.io/badge/Version-2.0-6f7a80?style=for-the-badge" alt="Version" /></a>
+    </p>
+    <h3><i>"Blur the shell, not the work."</i></h3>
+    <br />
+</div>
 
-> *"Blur the shell, not the work."*
-
-A highly optimized, modular configuration system for Hyprland on Arch Linux. Designed for focus, performance, and aesthetic perfection.
+A highly optimized, modular configuration system for Hyprland on Arch Linux.
+Designed for focus, performance, and aesthetic perfection.
 
 ---
 
-## Presets & Installation
+## Features
 
-Choose the setup that fits your persona. Each preset is a self-contained configuration.
+- **Unified Installer**: One script to handle dependencies, config deployment, and theme selection.
+- **Theme Switcher**: Hot-swap between themes instantly with `switch-theme`.
+- **Performance First**: Zero-bloat configs optimized for speed and fluidity.
+- **Consolidated Wallpapers**: Centralized management for all your backgrounds.
+- **Modular**: Components (Waybar, Dunst, Wofi) are styled to match each theme perfectly.
 
-### 1. The Minimal Setup
-*Theme: Monochrome Dark | Focus: Productivity*
+---
 
-A focused, distraction-free environment.
-*   **Palette**: Monochrome Dark (`#0f0f0f`)
-*   **Goal**: Pure productivity. Zero visual clutter.
-*   **Best For**: Developers, writers, and minimalists.
+## Installation
 
-```bash
-git clone https://github.com/v9mirza/v9-hyprdots.git
-cd v9-hyprdots/presets/minimal
-chmod +x install.sh
-./install.sh
-```
-
-### 2. The Hypr-Knight
-*Theme: Dark Knight / Gotham | Focus: Cinematic*
-
-A cinematic, intense aesthetic inspired by **The Dark Knight**.
-*   **Palette**: Deep Charcoal & Gotham Grey
-*   **Goal**: A moody, powerful desktop experience.
-*   **Best For**: Night owls, creative professionals, and fans of the Bat.
+Get up and running in seconds. The installer handles the rest.
 
 ```bash
 git clone https://github.com/v9mirza/v9-hyprdots.git
-cd v9-hyprdots/presets/hypr-knight
+cd v9-hyprdots
 chmod +x install.sh
 ./install.sh
 ```
 
 ---
 
-## Features & Tech Stack
+## Themes
 
-| Component | Tool | Description |
-| :--- | :--- | :--- |
-| **Window Manager** | Hyprland | Dwindle Layout, 4px Gaps, 8px Radius |
-| **Status Bar** | Waybar | Floating, 85% Opacity, Blur Effect |
-| **Terminal** | Ghostty | GPU-accelerated, V9 shaders, 0.94 Opacity |
-| **App Launcher** | Wofi | Blur, Cool Gray Selection |
-| **Notifications** | Dunst | Dark Blur, Gray Border |
-| **Lock Screen** | Hyprlock | Minimalist Void |
+### 1. Minimal
 
-*   **Modular Presets**: Switch between styles easily without breaking your system.
-*   **Performance First**: Zero-bloat configs optimized for speed.
-*   **Pixel Perfect**: Every border, gap, and radius is calculated.
+> _The focused workspace._
+
+- **Palette**: Monochrome Dark (`#0f0f0f`)
+- **Aesthetic**: Clean, sharp, distraction-free.
+- **Best For**: Deep work, coding, writing.
+
+### 2. Hypr-Knight
+
+> _The cinematic experience._
+
+- **Palette**: Deep Charcoal & Gotham Grey
+- **Aesthetic**: Moody, intense, inspired by the Dark Knight.
+- **Best For**: Creative sessions, night owls.
+
+---
+
+## Utilities
+
+### Theme Switcher
+
+Switch themes on the fly without breaking your workflow.
+
+```bash
+switch-theme              # Interactive menu
+switch-theme minimal      # Direct switch
+switch-theme hypr-knight  # Direct switch
+```
+
+### Wallpaper Manager
+
+Wallpapers are managed automatically.
+
+- Location: `~/.config/hypr/wallpapers/`
+- Configuration: `~/.config/hypr/hyprpaper.conf`
+
+---
 
 ## Keybindings
 
-| Action | Keybinding |
-| :--- | :--- |
-| **Terminal** | `Super` + `Enter` |
-| **App Launcher** | `Super` + `Space` |
-| **File Manager** | `Super` + `E` |
-| **System Monitor** | `Super` + `M` |
-| **Power Menu** | `Super` + `X` |
-| **Close Window** | `Super` + `Q` |
-| **Float Window** | `Super` + `F` |
-| **Lock Screen** | `Super` + `L` |
-| **Screenshot** | `Print` |
+| Key               | Action                  |
+| :---------------- | :---------------------- |
+| `Super` + `Enter` | Open Terminal (Ghostty) |
+| `Super` + `Space` | App Launcher (Wofi)     |
+| `Super` + `E`     | File Manager (Yazi)     |
+| `Super` + `B`     | Browser (Firefox)       |
+| `Super` + `M`     | System Monitor (Btop)   |
+| `Super` + `X`     | Power Menu              |
+| `Super` + `Q`     | Close Window            |
+| `Super` + `F`     | Toggle Float            |
+| `Super` + `L`     | Lock Screen             |
+| `Print`           | Screenshot              |
 
 ---
-V9-hyprdots by v9mirza.
+
+## Credits
+
+- **WM**: [Hyprland](https://hyprland.org)
+- **Bar**: [Waybar](https://github.com/Alexays/Waybar)
+- **Terminal**: [Ghostty](https://github.com/ghostty-org/ghostty)
+- **Launcher**: [Wofi](https://hg.sr.ht/~scoopta/wofi)
+- **Notifications**: [Dunst](https://dunst-project.org/)
+
+---
+
+<div align="center">
+    Made with ❤️ by <b>v9mirza</b>
+</div>
