@@ -202,25 +202,15 @@ fi
 
 # Install Theme Switcher
 step "Installing Theme Switcher"
-mkdir -p "$HOME/.local/bin"
-cp switch-theme.sh "$HOME/.local/bin/switch-theme"
-chmod +x "$HOME/.local/bin/switch-theme"
+sudo cp switch-theme.sh /usr/local/bin/switch-theme
+sudo chmod +x /usr/local/bin/switch-theme
+success "Installed 'switch-theme' to /usr/local/bin"
 
 # Install Themes for Switcher
 step "Installing Themes data..."
 mkdir -p "$HOME/.config/v9-hyprdots"
 cp -r themes "$HOME/.config/v9-hyprdots/"
 find "$HOME/.config/v9-hyprdots/themes" -name "*.sh" -exec chmod +x {} \;
-
-# Ensure ~/.local/bin is in PATH
-if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    if [[ -f "$HOME/.bashrc" ]] && ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' "$HOME/.bashrc"; then
-         echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
-         step "Added ~/.local/bin to PATH in .bashrc"
-    fi
-fi
-
-success "Installed 'switch-theme' to ~/.local/bin"
 
 
 # --- 7. GTK & Shell ---
