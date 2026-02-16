@@ -148,10 +148,10 @@ else
     warn "Keyring update had issues, continuing..."
 fi
 
-if run_with_spinner "Upgrading System" sudo pacman -Su --noconfirm; then
+if run_with_spinner "Upgrading System" sudo bash -c "rm -f /var/lib/pacman/db.lck && pacman -Syyu --noconfirm"; then
     success "System Updated"
 else
-    error "Update Failed (Check $LOG)"
+    error "Update Failed. Please run 'sudo pacman -Syu' manually to see the error."
     exit 1
 fi
 
