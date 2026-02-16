@@ -1,5 +1,5 @@
 #!/bin/bash
-# v9-hyprdots bootstrap (Modern Edition)
+# v9-hyprdots Unified Installer
 # "Tactical, Fast, Deterministic"
 
 set -e
@@ -30,7 +30,7 @@ print_banner() {
 EOF
     echo -e "${RESET}"
     echo -e "${DIM}----------------------------------------------------------------${RESET}"
-    echo -e "${C} :: v9-hyprdots Minimal :: ${DIM}v2.1${RESET}"
+    echo -e "${C} :: v9-hyprdots Unified :: ${DIM}v2.2${RESET}"
     echo
 }
 
@@ -89,6 +89,31 @@ print_banner
 # Root Check
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
+
+# Theme Selection
+echo -e "${W}Select your preferred theme:${RESET}"
+echo -e "   ${B}1)${RESET} Minimal"
+echo -e "   ${B}2)${RESET} Hypr-Knight"
+echo -n -e "Enter choice [1-2]: "
+read -r choice
+
+case $choice in
+    1) 
+        THEME="minimal" 
+        THEME_NAME="Minimal"
+        ;;
+    2) 
+        THEME="hypr-knight" 
+        THEME_NAME="Hypr-Knight"
+        ;;
+    *) 
+        error "Invalid choice. Exiting."
+        exit 1 
+        ;;
+esac
+
+step "Selected Theme: ${BOLD}$THEME_NAME${RESET}"
+sleep 1
 
 # Sudo Refresh
 step "Authenticating"
@@ -171,10 +196,12 @@ else
 fi
 
 # --- 6. Configuration ---
-step "Deploying Configs"
+step "Deploying Configs for $THEME_NAME"
 
-if [[ ! -f config/hypr/hyprland.conf ]]; then
-    error "Missing config/hypr/hyprland.conf"
+THEME_PATH="themes/$THEME"
+
+if [[ ! -d "$THEME_PATH" ]]; then
+    error "Theme directory not found: $THEME_PATH"
     exit 1
 fi
 
@@ -189,12 +216,19 @@ for d in hypr waybar dunst kitty wofi cava btop; do
 done
 
 # Copy
-if run_with_spinner "Syncing Dotfiles" rsync -av --delete config/ ~/.config/; then
+if run_with_spinner "Syncing Dotfiles" rsync -av --delete "$THEME_PATH/" ~/.config/; then
     success "Dotfiles applied"
 fi
 
-cp config/mimeapps.list ~/.config/mimeapps.list
-chmod +x ~/.config/hypr/scripts/*.sh 2>/dev/null || true
+# Install Theme Switcher
+step "Installing Theme Switcher"
+mkdir -p "$HOME/.local/bin"
+cp switch-theme.sh "$HOME/.local/bin/switch-theme"
+chmod +x "$HOME/.local/bin/switch-theme"
+# Ensure .local/bin is in PATH (common, but good to check/warn if strict)
+# We won't modify shell rc automatically to avoid bloat, but we can assume standard arch setup or warn.
+success "Installed 'switch-theme' to ~/.local/bin"
+
 
 # --- 7. GTK & Shell ---
 step "Finalizing Setup"
@@ -244,4 +278,5 @@ echo
 echo -e "  To start your session:"
 echo -e "  ${C}1.${RESET} Reboot your system"
 echo -e "  ${C}2.${RESET} Select 'Hyprland' at login"
+echo -e "  ${C}3.${RESET} Use '${BOLD}switch-theme${RESET}' to change themes later"
 echo
