@@ -115,7 +115,12 @@ apply_theme() {
         # Reload key components explicitly if needed
         killall -SIGUSR2 waybar 2>/dev/null || true
         killall dunst 2>/dev/null || true
-        # dunst &>/dev/null & # Usually autostarted by Hyprland or dbus
+        
+        # Reload Wallpaper
+        if [[ -f "$HOME/.config/hypr/scripts/init-wallpaper.sh" ]]; then
+            step "Reloading Wallpaper..."
+            bash "$HOME/.config/hypr/scripts/init-wallpaper.sh" &>/dev/null &
+        fi
         
         success "Hyprland reloaded"
     else
