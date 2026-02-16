@@ -34,19 +34,19 @@ EOF
 }
 
 step() {
-    echo -e "${B}::${RESET} ${W}$1${RESET}"
+    echo -e "${B}>>${RESET} ${W}$1${RESET}"
 }
 
 success() {
-    echo -e "   ${G}✔${RESET} $1"
+    echo -e "   ${G}OK${RESET} $1"
 }
 
 error() {
-    echo -e "   ${R}✖${RESET} $1"
+    echo -e "   ${R}ERROR${RESET} $1"
 }
 
 warn() {
-    echo -e "   ${C}‼${RESET} $1"
+    echo -e "   ${C}warn${RESET} $1"
 }
 
 # --- Checks ---
