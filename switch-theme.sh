@@ -101,6 +101,8 @@ apply_theme() {
     
     echo -n -e "   ${DIM}→${RESET} Syncing configs... "
     if rsync -av "$theme_path/" "$HOME/.config/" &> "$LOG"; then
+         # Fix wallpaper path to be absolute (hyprpaper requirement)
+         sed -i "s|~|$HOME|g" "$HOME/.config/hypr/hyprpaper.conf" || true
          echo -e "${G}Done${RESET}"
     else
          echo -e "${R}Fail${RESET}"

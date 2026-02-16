@@ -198,9 +198,16 @@ if rsync -av --delete "$THEME_PATH/" ~/.config/; then
     # Ensure scripts are executable
     chmod +x ~/.config/hypr/scripts/*.sh 2>/dev/null || true
     chmod +x ~/.config/waybar/scripts/*.sh 2>/dev/null || true
-fi
+    
+# Install Shared Wallpapers
+step "Installing Wallpapers..."
+mkdir -p "$HOME/.config/hypr/wallpapers"
+cp -r wallpapers/* "$HOME/.config/hypr/wallpapers/"
 
-# Install Theme Switcher
+# Fix wallpaper path (must happen after configs are copied)
+sed -i "s|~|$HOME|g" "$HOME/.config/hypr/hyprpaper.conf" || true
+
+# Install Themes for Switcher
 step "Installing Theme Switcher"
 sudo cp switch-theme.sh /usr/local/bin/switch-theme
 sudo chmod +x /usr/local/bin/switch-theme
