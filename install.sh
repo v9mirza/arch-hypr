@@ -140,8 +140,15 @@ if ! ping -c 1 archlinux.org &> /dev/null; then
 fi
 
 # --- 1. System Update ---
+# --- 1. System Update ---
 step "Updating System"
-if run_with_spinner "Syncing Repos & Updating" sudo pacman -Syu --noconfirm; then
+if run_with_spinner "Updating Keyring" sudo pacman -Sy --noconfirm archlinux-keyring; then
+    success "Keyring Updated"
+else
+    warn "Keyring update had issues, continuing..."
+fi
+
+if run_with_spinner "Upgrading System" sudo pacman -Su --noconfirm; then
     success "System Updated"
 else
     error "Update Failed (Check $LOG)"
