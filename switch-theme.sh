@@ -117,10 +117,10 @@ apply_theme() {
         killall dunst 2>/dev/null || true
         
         # Reload Wallpaper
-        if [[ -f "$HOME/.config/hypr/scripts/init-wallpaper.sh" ]]; then
-            step "Reloading Wallpaper..."
-            bash "$HOME/.config/hypr/scripts/init-wallpaper.sh" &>/dev/null &
-        fi
+        step "Reloading Wallpaper..."
+        killall hyprpaper 2>/dev/null || true
+        sleep 0.5
+        hyprpaper &>/dev/null &
         
         success "Hyprland reloaded"
     else
