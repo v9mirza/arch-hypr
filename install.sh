@@ -29,7 +29,7 @@ print_banner() {
 EOF
     echo -e "${RESET}"
     echo -e "${DIM}----------------------------------------------------------------${RESET}"
-    echo -e "${C} :: v9-hyprdots Unified :: ${DIM}v2.3 (Verbose)${RESET}"
+    echo -e "${C} :: v9-hyprdots Unified :: ${DIM}v2.3 ${RESET}"
     echo
 }
 
