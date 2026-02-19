@@ -100,9 +100,9 @@ apply_theme() {
     # Note: We are copying contents of themes/<theme>/ to ~/.config/
     
     echo -n -e "   ${DIM}→${RESET} Syncing configs... "
-    if rsync -av "$theme_path/" "$HOME/.config/" &> "$LOG"; then
+    if rsync -av --exclude "hyprpaper.conf" "$theme_path/" "$HOME/.config/" &> "$LOG"; then
          # Fix wallpaper path to be absolute (hyprpaper requirement)
-         sed -i "s|~|$HOME|g" "$HOME/.config/hypr/hyprpaper.conf" || true
+         # sed -i "s|~|$HOME|g" "$HOME/.config/hypr/hyprpaper.conf" || true
          echo -e "${G}Done${RESET}"
     else
          echo -e "${R}Fail${RESET}"
