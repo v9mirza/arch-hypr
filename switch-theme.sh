@@ -120,8 +120,11 @@ apply_theme() {
         
         # Reload Wallpaper
         step "Reloading Wallpaper..."
+        # Reload Wallpaper
+        step "Reloading Wallpaper..."
         pkill hyprpaper || true
-        sleep 1
+        # Wait for it to actually die
+        while pgrep -x hyprpaper >/dev/null; do sleep 0.1; done
         hyprpaper &>/dev/null &
         
         success "Hyprland reloaded"
