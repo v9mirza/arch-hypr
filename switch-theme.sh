@@ -33,7 +33,7 @@ fi
 print_banner() {
     clear
     echo -e "${DIM}----------------------------------------------------------------${RESET}"
-    echo -e "${C} :: v9-hyprdots Theme Switcher :: ${Reset}"
+    echo -e "${C} :: v9-hyprdots Theme Switcher :: ${RESET}"
     echo -e "${DIM}----------------------------------------------------------------${RESET}"
     echo
 }
@@ -70,6 +70,8 @@ select_theme() {
 
 apply_theme() {
     local theme_path="$THEMES_DIR/$THEME"
+    local active_wallpaper=""
+    local hyprpaper_conf="$HOME/.config/hypr/hyprpaper.conf"
     
     if [[ ! -d "$theme_path" ]]; then
         error "Theme directory not found: $theme_path"
@@ -77,6 +79,11 @@ apply_theme() {
     fi
 
     step "Applying theme: ${BOLD}$THEME${RESET}"
+
+    # Preserve currently configured wallpaper so it survives theme changes.
+    if [[ -f "$hyprpaper_conf" ]]; then
+        active_wallpaper=$(grep -E '^[[:space:]]*wallpaper[[:space:]]*=' "$hyprpaper_conf" | tail -n 1 | sed -E 's/^[[:space:]]*wallpaper[[:space:]]*=[[:space:]]*[^,]*,//')
+    fi
 
     # Backup existing configs
     mkdir -p ~/.config
@@ -108,6 +115,25 @@ apply_theme() {
          echo -e "${R}Fail${RESET}"
          exit 1
     fi
+
+    if [[ -n "$active_wallpaper" ]]; then
+        mkdir -p "$HOME/.config/hypr"
+        touch "$hyprpaper_conf"
+        escaped_wallpaper=$(printf '%s' "$active_wallpaper" | sed 's/[&|]/\\&/g')
+        if grep -Eq '^[[:space:]]*preload[[:space:]]*=' "$hyprpaper_conf"; then
+            sed -Ei "s|^[[:space:]]*preload[[:space:]]*=.*|preload = $escaped_wallpaper|" "$hyprpaper_conf"
+        else
+            printf 'preload = %s\n' "$active_wallpaper" >> "$hyprpaper_conf"
+        fi
+        if grep -Eq '^[[:space:]]*wallpaper[[:space:]]*=' "$hyprpaper_conf"; then
+            sed -Ei "s|^[[:space:]]*wallpaper[[:space:]]*=.*|wallpaper = ,$escaped_wallpaper|" "$hyprpaper_conf"
+        else
+            printf 'wallpaper = ,%s\n' "$active_wallpaper" >> "$hyprpaper_conf"
+        fi
+        if ! grep -Eq '^[[:space:]]*ipc[[:space:]]*=' "$hyprpaper_conf"; then
+            printf 'ipc = on\n' "$hyprpaper_conf"
+        fi
+    fi
     
     # Reload Hyprland if running
     if pgrep -x "Hyprland" > /dev/null; then
@@ -118,14 +144,17 @@ apply_theme() {
         killall -SIGUSR2 waybar 2>/dev/null || true
         killall dunst 2>/dev/null || true
         
-        # Reload Wallpaper
         step "Reloading Wallpaper..."
-        # Reload Wallpaper
-        step "Reloading Wallpaper..."
-        pkill hyprpaper || true
+        pkill -x hyprpaper || true
         # Wait for it to actually die
         while pgrep -x hyprpaper >/dev/null; do sleep 0.1; done
         hyprpaper &>/dev/null &
+
+        if [[ -n "$active_wallpaper" ]]; then
+            sleep 0.3
+            hyprctl hyprpaper preload "$active_wallpaper" &>/dev/null || true
+            hyprctl hyprpaper wallpaper ",$active_wallpaper" &>/dev/null || true
+        fi
         
         success "Hyprland reloaded"
     else
