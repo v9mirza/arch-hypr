@@ -132,5 +132,5 @@ Wallpapers are managed automatically.
 ---
 
 <div align="center">
-    Made with ❤️ by <b>v9mirza</b>
+    Made by <b>v9mirza</b>
 </div>
